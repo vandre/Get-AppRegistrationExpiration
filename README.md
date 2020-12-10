@@ -1,5 +1,11 @@
 # Get-AppRegistrationExpiration
 
+## Overview
+Solution was designed for the purpose of providing the ability to monitor and notify in the event of App Registration\Service Principal Name (SPN) secret key or certificate coming within the threshold of expiring. The solution is designed to be cross tenant and requires an App Registration\SPN in the desired environment with Global Reader rights. Utilizing Azure Automation (AA) and AA resources like Variables and Credentials our runbook pulls an array of SPN’s from the environment and calculates the time until expiration before using our custom function to send the data to a Log Analytics Workspace. Finally Azure Monitor alerts can be triggered based on a Kusto query to notify resources that there are SPN’s within the threshold for expiration.
+
+
+
+
 Solution is designed for use in Azure Automtion and require a Azure Automation Credential with rights in the desired tenant. It will also require two Azure Automation Variable Assets for the Log Analytics Workspace:
 
 'LogAnalyticsWorkspaceID'
