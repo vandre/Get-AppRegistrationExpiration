@@ -3,7 +3,6 @@ Solution was designed for the purpose of providing the ability to monitor and no
 # 2	Problem Statement
 Azure services do not have a native feature to report on expiring App registrations. Without a solution in place to monitor and notify on expiration of these SPN’s solutions ranging from Custom Apps, and DevOps CI\CD Pipelines too orchestration engines like Azure Automation and Logic Apps, can and will cease to function without notice. 
 -	**Purpose:** To provide an automated mechanism of calculating and ingesting the expiration dates into Log Analytics and automatically notify resources when expiration is within threshold.
--	**Responsibility:** Automation Engineers
 -	**Requisites:** This solution consists of:
      -	1 Runbook consisting of the PowerShell script in this document. 
      -	2 Automation Variables containing the Log Analytics Workspace ID and the Log Analytics Primary Key.
