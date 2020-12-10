@@ -106,8 +106,6 @@ To create the Azure monitor alert rule, navigate to Monitor -> Alerts -> New ale
  
 ![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic11.png)
 
-![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic12.png)
-
 ### 4.	Under Customize Actions click Email Subject
 - **Subject Line:** NoReply: WARNING:: AppRegistrations Expiring
 ### 5.	Alert Rule Details:
