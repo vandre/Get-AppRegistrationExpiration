@@ -1,5 +1,3 @@
-﻿
-
 Function _SendToLogAnalytics{
     Param(
         [string]$customerId,
@@ -40,9 +38,16 @@ Function _SendToLogAnalytics{
         
         # Try to send the logs to the Log Analytics workspace
         Try{
-            $response = Invoke-WebRequest -Uri $uri -Method $method -ContentType $contentType -Headers $headers -Body $body -UseBasicParsing -ErrorAction stop
+            $response = Invoke-WebRequest `
+            -Uri $uri `
+            -Method $method `
+            -ContentType $contentType `
+            -Headers $headers `
+            -Body $body `
+            -UseBasicParsing `
+            -ErrorAction stop
         }
-        # Catch any exeptions and write them to the output 
+        # Catch any exceptions and write them to the output 
         Catch{
             Write-Error "$($_.Exception)"
             throw "$($_.Exception)" 
@@ -55,17 +60,17 @@ Function _SendToLogAnalytics{
 #### End Function Declaration Section ##############################################################
 
 ####Connect to the O365 Tenant using AutomationCredential###########################################
-####Change the Azure Automation Credential Name on line 61
-####Change the Tenant ID on line 68
+
 Try{
-    $credentials = Get-AutomationPSCredential -Name #"<CredentialName>" -ErrorAction Stop
+    $credentials = Get-AutomationPSCredential -Name "AppRegistrationMonitor" -ErrorAction Stop
 } catch {
     write-error "Unable to find AutomationPSCredential"
     throw "Unable to find AutomationPSCredential"
 }
 
 Try {
-    Connect-AzAccount -ServicePrincipal -Credential $credentials -Tenant #'<Tenant ID>'
+    $tenantID= Get-AutomationVariable -Name 'MonitoredTeantID'
+    Connect-AzAccount -ServicePrincipal -Credential $credentials -Tenant $tenantID
 } catch {
     write-error "$($_.Exception)"
     throw "$($_.Exception)"
@@ -82,7 +87,14 @@ $appWithCredentials += $applications | Sort-Object -Property DisplayName | % {
     $application = $_
     $sp = $servicePrincipals | ? ApplicationId -eq $application.ApplicationId
     Write-Verbose ('Fetching information for application {0}' -f $application.DisplayName)
-    $application | Get-AzADAppCredential -ErrorAction SilentlyContinue | Select-Object -Property @{Name='DisplayName'; Expression={$application.DisplayName}}, @{Name='ObjectId'; Expression={$application.Id}}, @{Name='ApplicationId'; Expression={$application.ApplicationId}}, @{Name='KeyId'; Expression={$_.KeyId}}, @{Name='Type'; Expression={$_.Type}},@{Name='StartDate'; Expression={$_.StartDate -as [datetime]}},@{Name='EndDate'; Expression={$_.EndDate -as [datetime]}}
+    $application | Get-AzADAppCredential -ErrorAction SilentlyContinue | Select-Object `
+    -Property @{Name='DisplayName'; Expression={$application.DisplayName}}, `
+    @{Name='ObjectId'; Expression={$application.Id}}, `
+    @{Name='ApplicationId'; Expression={$application.ApplicationId}}, `
+    @{Name='KeyId'; Expression={$_.KeyId}}, `
+    @{Name='Type'; Expression={$_.Type}},`
+    @{Name='StartDate'; Expression={$_.StartDate -as [datetime]}},`
+    @{Name='EndDate'; Expression={$_.EndDate -as [datetime]}}
   }
 
 Write-output 'Validating expiration data...'
@@ -110,6 +122,6 @@ $sharedKey= Get-AutomationVariable -Name 'LogAnalyticsPrimaryKey'
 _SendToLogAnalytics -CustomerId $customerId `
                         -SharedKey $sharedKey `
                         -Logs $Audit `
-                        -LogType "ServicePrincipalExpiration" `
+                        -LogType "AppRegistrationExpiration" `
                         -TimeStampField "TimeStamp"
 Write-Output 'Done.'
