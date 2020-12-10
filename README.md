@@ -10,6 +10,8 @@ Azure services do not have a native feature to report on expiring App registrati
      -	1 SPN in the monitored cloud environment with Global Reader role.
 # 3	Solution Design
 This document will not go over creating the runbook and scheduling its execution but does provide the source code and how to setup the requisite assets.
+## 3.1 Solution Architecture
+
 ## 3.2	AA Assets
 ## 3.2.1	AppRegistrationMonitor Credential
 The App Registration Monitor is a SPN or App Registration that is created in the Azure Active Directory (AAD) tenant to be monitored. The SPN must have Global Reader rights in order to query all App Registrations and their property fields.
