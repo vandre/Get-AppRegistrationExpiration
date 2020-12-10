@@ -11,7 +11,7 @@ Azure services do not have a native feature to report on expiring App registrati
 # 3	Solution Design
 This document will not go over creating the runbook and scheduling its execution but does provide the source code and how to setup the requisite assets.
 ## 3.1 Solution Architecture
-
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic1.png)
 ## 3.2	AA Assets
 ## 3.2.1	AppRegistrationMonitor Credential
 The App Registration Monitor is a SPN or App Registration that is created in the Azure Active Directory (AAD) tenant to be monitored. The SPN must have Global Reader rights in order to query all App Registrations and their property fields.
@@ -19,16 +19,22 @@ The App Registration Monitor is a SPN or App Registration that is created in the
 - **Account Types:** Accounts in this organizational directory only
 - **Redirect URL:** Blank
 - **Click Register**
- 
+
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic2.png) 
 
 ### 2.	Once the account has been created you will be redirected to the account Overview pane. Copy the value for the Application (client) ID to a notepad. 
- 
+
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic3.png)
+
 ### 3.	Navigate to Certificates & Secrets -> +New Client Secret
 - **Description:** Optional
 - **Expires**: 1 year
 - **Click Add**
 - **Before navigating away Copy the Value to Notepad.**
- 
+
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic4.png)
+
+
 ### 4.	Navigate to Azure Active Directory -> Roles and Administrators -> Global Reader   -> Add Assignments. Select the AppRegistrationMonitor account and click ok.
 ### 5.	Navigate to the Azure Automation Account -> Credentials -> Add a Credential.
 - **Name:** AppRegistrationMonitor
@@ -40,7 +46,9 @@ The App Registration Monitor is a SPN or App Registration that is created in the
 ### 3.2.2	LogAnalyticsPrimaryKey
 The Log Analytics Primary key is an Azure Automation variable that can be encrypted to prevent unauthorized disclosure.
 To obtain the key, navigate to the Log Analytics Workspace -> Agents Management and copy the Primary Key field.
- 
+
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic5.png)
+
 Once you have the key, return to the Azure Automation Account -> Variables -> + Add Variable.
 - **Name:** LogAnalyticsPrimaryKey
 - **Description:** Optional
@@ -49,11 +57,14 @@ Once you have the key, return to the Azure Automation Account -> Variables -> + 
 - **Encrypted:** Yes
 - **Click Create**
  
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic6.png)
 
 ### 3.2.3	LogAnalyticsWorkspaceID
 The Log Analytics Workspace ID is an Azure Automation variable that can be encrypted to prevent unauthorized disclosure.
 To obtain the key, navigate to the Log Analytics Workspace -> Agents Management and copy the WorkspaceID field.
- 
+
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic7.png)
+
 Once you have the key, return to the Azure Automation Account -> Variables -> + Add Variable.
 - **Name:** LogAnalyticsWorkspaceID
 - **Description:** Optional
@@ -61,7 +72,9 @@ Once you have the key, return to the Azure Automation Account -> Variables -> + 
 - **Value:** Paste the key
 - **Encrypted:** Optional
 **Click Create**
- 
+
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic8.png)
+
 ### 3.2.4	MonitoredTenantID
 The Tenant ID for the cloud environment that is going to be monitored is an Azure Automation variable that can be encrypted to prevent unauthorized disclosure.
 To obtain the key, navigate to the AppRegistrationMonitor SPN in Azure Active Directory on the Overview page you will find the Directory (tenant) ID  Copy the value.
@@ -72,7 +85,9 @@ Once you have the ID, return to the Azure Automation Account -> Variables -> + A
 - **Value:** Paste the key
 - **Encrypted:** Optional
 **Click Create**
- 
+
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic9.png)
+
 ## 3.3	Azure Monitor Alert
 To create the Azure monitor alert rule, navigate to Monitor -> Alerts -> New alert rule.
 ### 1.	Under Scope select the Log Analytics Workspace as the resource
@@ -84,10 +99,15 @@ To create the Azure monitor alert rule, navigate to Monitor -> Alerts -> New ale
 -	Input a **0** to the threshold Value box.
 -	And change the evaluation to **1440** and **1440** for a daily run.
 -	**Click Done**
- 
+
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic10.png)
+
 ### 3.	Select and action group for email notification. If you do not already have one click Create action Group and follow the prompts. Fill out the Basic and Notifications Tabs.
  
- 
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic11.png)
+
+![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic12.png)
+
 ### 4.	Under Customize Actions click Email Subject
 - **Subject Line:** NoReply: WARNING:: AppRegistrations Expiring
 ### 5.	Alert Rule Details:
