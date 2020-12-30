@@ -26,7 +26,7 @@ Function _SendToLogAnalytics{
         $authorization = 'SharedKey {0}:{1}' -f $customerId,$encodedHash
 
         # Create the uri for the data insertion endpoint for the Log Analytics workspace
-        $uri = "https://" + $customerId + ".ods.opinsights.azure.us" + $resource + "?api-version=2016-04-01"
+        $uri = "https://" + $customerId + ".ods.opinsights.azure.com" + $resource + "?api-version=2016-04-01"
 
         # Create the headers to be used in the Invoke-WebRequest
         $headers = @{
@@ -89,7 +89,7 @@ $appWithCredentials += $applications | Sort-Object -Property DisplayName | % {
     Write-Verbose ('Fetching information for application {0}' -f $application.DisplayName)
     $application | Get-AzADAppCredential -ErrorAction SilentlyContinue | Select-Object `
     -Property @{Name='DisplayName'; Expression={$application.DisplayName}}, `
-    @{Name='ObjectId'; Expression={$application.Id}}, `
+    @{Name='ObjectId'; Expression={$application.ObjectId}}, `
     @{Name='ApplicationId'; Expression={$application.ApplicationId}}, `
     @{Name='KeyId'; Expression={$_.KeyId}}, `
     @{Name='Type'; Expression={$_.Type}},`
