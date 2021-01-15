@@ -81,7 +81,7 @@ Try{
 }
 
 Try {
-    $tenantID= Get-AutomationVariable -Name 'MonitoredTeantID'
+    $tenantID= Get-AutomationVariable -Name 'MonitoredTenantID'
     Connect-AzAccount -ServicePrincipal -Credential $credentials -Tenant $tenantID
 } catch {
     write-error "$($_.Exception)"
