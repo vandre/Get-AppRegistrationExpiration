@@ -92,8 +92,11 @@ To create the Azure monitor alert rule, navigate to Monitor -> Alerts -> New ale
 ### 1.	Under Scope select the Log Analytics Workspace as the resource
 ### 2.	For Condition select Custom Log Search, past the Kusto query below into the search query box.
 `AppRegistrationExpiration_CL 
-| where DaysToExpiration_d <= 30 //Change this value to the expiration threshold
-| project TimeGenerated, DisplayName_s, ApplicationId_Guid_g, Type_s, StartDate_value_t, EndDate_value_t, Status_s, DaysToExpiration_d`
+| summarize arg_max(TimeGenerated,*) by ApplicationId_Guid_g
+| where DaysToExpiration_d <= 50 //Change this value to the expiration threshold 
+| where TimeGenerated > ago(1d)
+| project TimeGenerated, DisplayName_s, ApplicationId_Guid_g, Type_s, StartDate_value_t, EndDate_value_t, Status_s, DaysToExpiration_d
+`
 
 -	Input a **0** to the threshold Value box.
 -	And change the evaluation to **1440** and **1440** for a daily run.
