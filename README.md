@@ -87,6 +87,16 @@ Once you have the ID, return to the Azure Automation Account -> Variables -> + A
 
 ![](https://github.com/Cj-Scott/Get-AppRegistrationExpiration/blob/main/Images/Pic9.png)
 
+### 3.2.5	Download Az Modules
+Navigate to your Automation Accout -> Modules Gallery
+Search for and select Az.Accounts. Click Import.
+Search for and select Az.Resources. Click Import.
+
+### 3.2.6 Create and configure Runbook
+Navigate to your Automation Account -> Runbooks -> Click +Create a runbook
+Give the runbook a name. Select "PowerShell" as Runbook type and click Create. Copy the PowerShell script from "Get-AppRegistrationExpiration.ps1" into the Runbook. Click Publish and Yes to confirm. From the Automation account Overview, click Start to run the task and confirm it completes with no errors.
+Within the Runbook, go to Schedules. Add/create a schedule that runs this scripts periodically.
+
 ## 3.3	Azure Monitor Alert
 To create the Azure monitor alert rule, navigate to Monitor -> Alerts -> New alert rule.
 ### 1.	Under Scope select the Log Analytics Workspace as the resource
@@ -97,6 +107,7 @@ To create the Azure monitor alert rule, navigate to Monitor -> Alerts -> New ale
 | where TimeGenerated > ago(1d)
 | project TimeGenerated, DisplayName_s, ApplicationId_Guid_g, Type_s, StartDate_value_t, EndDate_value_t, Status_s, DaysToExpiration_d
 `
+**Note:** If the kusto query presents an error that it "failed to resolve table or column expression" you may need to wait and try again later.
 
 -	Input a **0** to the threshold Value box.
 -	And change the evaluation to **1440** and **1440** for a daily run.
