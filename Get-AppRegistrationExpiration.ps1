@@ -105,20 +105,19 @@ $appWithCredentials += $applications | Sort-Object -Property DisplayName | % {
     @{Name='ApplicationId'; Expression={$application.ApplicationId}}, `
     @{Name='KeyId'; Expression={$_.KeyId}}, `
     @{Name='Type'; Expression={$_.Type}},`
-    @{Name='StartDate'; Expression={$_.StartDate -as [datetime]}},`
-    @{Name='EndDate'; Expression={$_.EndDate -as [datetime]}}
+    @{Name='StartDate'; Expression={$_.StartDateTime -as [datetime]}},`
+    @{Name='EndDate'; Expression={$_.EndDateTime -as [datetime]}}
   }
 
 Write-output 'Validating expiration data...'
 $today = (Get-Date).ToUniversalTime()
 $appWithCredentials | Sort-Object EndDate | % {
-        if($_.EndDate -lt $today) {
-            $days= ($_.EndDate-$Today).Days
+        $days= ($_.EndDate-$Today).Days
+		if($_.EndDate -lt $today) {
             $_ | Add-Member -MemberType NoteProperty -Name 'Status' -Value 'Expired'
             $_ | Add-Member -MemberType NoteProperty -Name 'TimeStamp' -Value "$timestamp"
             $_ | Add-Member -MemberType NoteProperty -Name 'DaysToExpiration' -Value $days
         }  else {
-            $days= ($_.EndDate-$Today).Days
             $_ | Add-Member -MemberType NoteProperty -Name 'Status' -Value 'Valid'
             $_ | Add-Member -MemberType NoteProperty -Name 'TimeStamp' -Value "$timestamp"
             $_ | Add-Member -MemberType NoteProperty -Name 'DaysToExpiration' -Value $days
