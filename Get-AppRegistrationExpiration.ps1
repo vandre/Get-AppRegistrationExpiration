@@ -72,7 +72,7 @@ Function _SendToLogAnalytics{
 #### End Function Declaration Section ##############################################################
 
 ####Connect to the O365 Tenant using AutomationCredential###########################################
-
+Disable-AzContextAutosave -Scope Process 
 Try{
     $credentials = Get-AutomationPSCredential -Name "AppRegistrationMonitor" -ErrorAction Stop
 } catch {
@@ -97,12 +97,12 @@ $timeStamp = Get-Date -format o
 $appWithCredentials = @()
 $appWithCredentials += $applications | Sort-Object -Property DisplayName | % {
     $application = $_
-    $sp = $servicePrincipals | ? ApplicationId -eq $application.ApplicationId
+    $sp = $servicePrincipals | ? ApplicationId -eq $application.appId
     Write-Verbose ('Fetching information for application {0}' -f $application.DisplayName)
     $application | Get-AzADAppCredential -ErrorAction SilentlyContinue | Select-Object `
     -Property @{Name='DisplayName'; Expression={$application.DisplayName}}, `
-    @{Name='ObjectId'; Expression={$application.ObjectId}}, `
-    @{Name='ApplicationId'; Expression={$application.ApplicationId}}, `
+    @{Name='ObjectId'; Expression={$application.Id}}, `
+    @{Name='ApplicationId'; Expression={$application.appId}}, `
     @{Name='KeyId'; Expression={$_.KeyId}}, `
     @{Name='Type'; Expression={$_.Type}},`
     @{Name='StartDate'; Expression={$_.StartDateTime -as [datetime]}},`
